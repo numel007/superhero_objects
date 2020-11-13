@@ -1,6 +1,8 @@
 import random
 from ability import Ability
 from armor import Armor
+from weapon import Weapon
+
 
 class Hero:
     def __init__(self, name, starting_health = 100):
@@ -9,6 +11,8 @@ class Hero:
         self.current_health =  starting_health
         self.abilities = list()
         self.armors = list()
+        self.deaths = 0
+        self.kills = 0
 
     def add_ability(self, ability):
         self.abilities.append(ability)
@@ -16,12 +20,23 @@ class Hero:
     def add_armor(self, armor):
         self.armors.append(armor)
 
+    def add_weapon(self, weapon):
+        self.abilities.append(weapon)
+
     def attack(self):
         total_dmg = 0
         for ability in self.abilities:
             total_dmg += ability.attack()
         
         return total_dmg
+
+    def add_kill(self, num_kills):
+        self.kills += num_kills
+        return self.kills
+
+    def add_death(self, num_deaths):
+        self.deaths += num_deaths
+        return self.deaths
 
     def defend(self, damage_amt):
         total_armor = 0
@@ -47,44 +62,16 @@ class Hero:
                 while self.is_alive() == True and opponent.is_alive() == True:
                     opponent.take_damage(self.attack())
                     self.take_damage(opponent.attack())
-                    print('running loop again')
 
-                print('exited while loop')
                 if self.is_alive() == True:
+                    self.add_kill(1)
+                    opponent.add_death(1)
                     print(f'{self.name} won')
                 elif opponent.is_alive() == True:
+                    opponent.add_kill(1)
+                    self.add_death(1)
                     print(f'{opponent.name} won')
                 else:
+                    self.add_death(1)
+                    opponent.add_death(1)
                     print("'Both of ya'll died... somehow")
-
-# Initialize hero 1
-hero1 = Hero("Bob", 900)
-
-# Initialize hero 2
-hero2 = Hero("Tom", 900)
-
-# Create abilities for hero 1 and add them to the list
-ability = Ability("Great debugging", 50)
-ability2 = Ability("Lesser debugging", 10)
-hero1.add_ability(ability)
-hero1.add_ability(ability2)
-
-# Create armors for hero 1 and add them to the list
-armor = Armor("Stone Helmet", 10)
-armor2 = Armor("Stone Carapace", 20)
-hero1.add_armor(armor)
-hero1.add_armor(armor2)
-
-# Create abilities for hero 2 and add them to the list
-ability3 = Ability("Great debugging", 50)
-ability4 = Ability("Lesser debugging", 10)
-hero2.add_ability(ability3)
-hero2.add_ability(ability4)
-
-# Create armors for hero 2 and add them to the list
-armor3 = Armor("Stone Helmet", 10)
-armor4 = Armor("Stone Carapace", 20)
-hero2.add_armor(armor3)
-hero2.add_armor(armor4)
-
-hero1.fight(hero2)
